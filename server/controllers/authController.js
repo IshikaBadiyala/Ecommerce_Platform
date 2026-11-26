@@ -53,6 +53,7 @@ const sendTokenResponse = (user, statusCode, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      lastLoginAt: user.lastLoginAt || new Date(),
     },
   });
 };
@@ -243,7 +244,25 @@ const login = async (req, res, next) => {
       });
     }
 
-    // 5. Issue token
+    // 5. Account status validation
+    if (user.accountStatus && user.accountStatus === 'suspended') {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account is currently suspended. Please contact customer support.',
+      });
+    }
+
+    // 6. Security tracking: Record last login timestamp
+    if (mongoose.connection.readyState === 1 && typeof user.save === 'function') {
+      try {
+        user.lastLoginAt = new Date();
+        await user.save({ validateBeforeSave: false });
+      } catch (saveErr) {
+        // Non-blocking login audit update
+      }
+    }
+
+    // 7. Issue authenticated session token
     sendTokenResponse(user, 200, res);
   } catch (error) {
     next(error);
