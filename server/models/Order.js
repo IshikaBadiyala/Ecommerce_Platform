@@ -151,6 +151,20 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    carrier: {
+      type: String,
+      trim: true,
+      default: 'BlueDart / Express Logistics',
+    },
+    trackingNumber: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    estimatedDeliveryDate: {
+      type: Date,
+      default: null,
+    },
     status: {
       type: String,
       enum: [
