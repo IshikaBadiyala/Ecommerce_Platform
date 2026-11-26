@@ -73,6 +73,23 @@ const productSchema = new mongoose.Schema(
       default: 'BUYNEST Select',
       index: true,
     },
+    sku: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      sparse: true,
+      index: true,
+    },
+    tags: {
+      type: [String],
+      default: [],
+      index: true,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
     description: {
       type: String,
       required: [true, 'Product description is required'],

@@ -125,6 +125,15 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    accountStatus: {
+      type: String,
+      enum: ['active', 'suspended', 'pending_verification'],
+      default: 'active',
+    },
+    lastLoginAt: {
+      type: Date,
+      default: null,
+    },
     addresses: {
       type: [addressSchema],
       default: [],
