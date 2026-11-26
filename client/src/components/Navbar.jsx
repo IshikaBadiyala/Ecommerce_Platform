@@ -23,6 +23,22 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const NAV_DEPARTMENTS = [
+    { id: 'All', label: 'All Products' },
+    { id: 'Clothing', label: 'Clothing (Tops & Hoodies)' },
+    { id: 'Accessories', label: 'Purses & Handbags' },
+    { id: 'Electronics', label: 'Electronics & Audio' },
+    { id: 'Home & Lifestyle', label: 'Home Decor' },
+  ];
+
+  const isDepartmentActive = (catId) => {
+    if (catId === 'All') {
+      return location.pathname === '/' && !location.search;
+    }
+    const searchParams = new URLSearchParams(location.search);
+    return searchParams.get('category') === catId || location.search.includes(encodeURIComponent(catId)) || location.search.includes(catId);
+  };
+
   const handleLogout = async () => {
     setDropdownOpen(false);
     setMobileMenuOpen(false);
@@ -245,47 +261,23 @@ const Navbar = () => {
         {/* 3. Desktop Department / Category Sub-Navbar */}
         <div className="hidden lg:block border-t border-slate-100 bg-slate-50/70 py-2">
           <div className="flex items-center justify-between">
-            <nav className="flex items-center gap-7 text-xs font-bold text-slate-600 uppercase tracking-wider">
-              <button
-                onClick={() => handleCategoryNav('All')}
-                className={`hover:text-slate-900 transition-colors ${
-                  location.pathname === '/' && !location.search ? 'text-emerald-700 font-extrabold border-b-2 border-emerald-600 pb-0.5' : ''
-                }`}
-              >
-                All Products
-              </button>
-              <button
-                onClick={() => handleCategoryNav('Clothing')}
-                className={`hover:text-slate-900 transition-colors ${
-                  location.search.includes('Clothing') ? 'text-emerald-700 font-extrabold border-b-2 border-emerald-600 pb-0.5' : ''
-                }`}
-              >
-                Clothing (Tops & Hoodies)
-              </button>
-              <button
-                onClick={() => handleCategoryNav('Accessories')}
-                className={`hover:text-slate-900 transition-colors ${
-                  location.search.includes('Accessories') ? 'text-emerald-700 font-extrabold border-b-2 border-emerald-600 pb-0.5' : ''
-                }`}
-              >
-                Purses & Handbags
-              </button>
-              <button
-                onClick={() => handleCategoryNav('Electronics')}
-                className={`hover:text-slate-900 transition-colors ${
-                  location.search.includes('Electronics') ? 'text-emerald-700 font-extrabold border-b-2 border-emerald-600 pb-0.5' : ''
-                }`}
-              >
-                Electronics & Audio
-              </button>
-              <button
-                onClick={() => handleCategoryNav('Home & Lifestyle')}
-                className={`hover:text-slate-900 transition-colors ${
-                  location.search.includes('Home') ? 'text-emerald-700 font-extrabold border-b-2 border-emerald-600 pb-0.5' : ''
-                }`}
-              >
-                Home Decor
-              </button>
+            <nav className="flex items-center gap-2 sm:gap-4 text-xs font-bold text-slate-600 uppercase tracking-wider">
+              {NAV_DEPARTMENTS.map((dept) => {
+                const active = isDepartmentActive(dept.id);
+                return (
+                  <button
+                    key={dept.id}
+                    onClick={() => handleCategoryNav(dept.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                      active
+                        ? 'bg-emerald-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                    }`}
+                  >
+                    {dept.label}
+                  </button>
+                );
+              })}
             </nav>
 
             {isAdmin && (
