@@ -35,10 +35,13 @@ const ProductCard = ({ product }) => {
 
   const isOutOfStock = product.stock <= 0;
   const isLowStock = product.stock > 0 && product.stock <= 5;
+  const ratingScore = product.rating ? Number(product.rating).toFixed(1) : '4.8';
+  const reviewsCount = product.numReviews ? `${product.numReviews}` : '120+';
 
   // Realistic Indian MRP discount calculation (e.g. 35-45% off)
   const originalMrp = Math.round(product.price * 1.45);
   const discountPercent = Math.round(((originalMrp - product.price) / originalMrp) * 100);
+  const savingsAmount = originalMrp - product.price;
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200/80 hover:border-emerald-300 hover:shadow-2xl transition-all duration-300 flex flex-col overflow-hidden relative">
@@ -84,21 +87,22 @@ const ProductCard = ({ product }) => {
           </button>
 
           {isOutOfStock ? (
-            <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
-              Sold Out
+            <span className="bg-rose-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+              Out of Stock
             </span>
           ) : isLowStock ? (
-            <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+            <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
               Only {product.stock} left!
             </span>
           ) : null}
         </div>
 
-        {/* Rating Floating Pill */}
-        <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-md shadow-sm flex items-center gap-1 text-[11px] font-bold text-slate-800">
-          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-          <span>4.8</span>
-          <span className="text-[10px] text-slate-600 font-normal">| 120+</span>
+        {/* Rating Floating Pill with Dynamic Reviews */}
+        <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1.5 text-[11px] font-bold text-slate-800 border border-slate-100">
+          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+          <span>{ratingScore}</span>
+          <span className="text-[10px] text-slate-500 font-medium">({reviewsCount})</span>
         </div>
 
         {/* Quick View Hover Overlay */}
@@ -139,9 +143,14 @@ const ProductCard = ({ product }) => {
                 ₹{originalMrp.toLocaleString('en-IN')}
               </span>
             </div>
-            <span className="text-[10px] font-medium text-emerald-800">
-              Free Delivery
-            </span>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded">
+                Save ₹{savingsAmount.toLocaleString('en-IN')}
+              </span>
+              <span className="text-[10px] font-medium text-slate-600">
+                • Free Delivery
+              </span>
+            </div>
           </div>
 
           <button
